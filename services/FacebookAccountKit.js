@@ -82,11 +82,16 @@ module.exports = {
 
     signup: async params =>
     {
-        let user, phone;
+        let user, phone, alreadyPhone;
 
         try
         {
-            phone = await strapi.plugins[ 'facebook-account-kit' ].models.phone.create( params.phone );
+            alreadyPhone = await strapi.plugins[ 'facebook-account-kit' ].models.phone.findOne({ number: params.phone.number });
+            if(!alreadyPhone.id){
+                phone = await strapi.query('phone', 'facebook-account-kit').create(params.phone);
+            }else{
+                phone = alreadyPhone
+            }
             
             user = await strapi.plugins[ 'users-permissions' ].services.user.add(
                 {
