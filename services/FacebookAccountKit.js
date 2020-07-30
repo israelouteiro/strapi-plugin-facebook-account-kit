@@ -87,7 +87,7 @@ module.exports = {
         try
         {
             alreadyPhone = await strapi.plugins[ 'facebook-account-kit' ].models.phone.findOne({ number: params.phone.number });
-            if(!alreadyPhone.id){
+            if(!alreadyPhone || !alreadyPhone.id){
                 phone = await strapi.query('phone', 'facebook-account-kit').create(params.phone);
             }else{
                 phone = alreadyPhone
